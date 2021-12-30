@@ -1,0 +1,5 @@
+module Squirrel3 {
+    header "squirrel.h"
+    link "squirrel"
+    export *
+}
