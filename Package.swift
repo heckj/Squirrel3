@@ -7,15 +7,18 @@ let package = Package(
     products: [
         .library(
             name: "Squirrel3",
-            targets: ["Squirrel3"]),
+            targets: ["Squirrel3"]
+        ),
     ],
     targets: [
         .target(
             name: "Squirrel3",
-            dependencies: ["CSquirrel"]),
+            dependencies: ["CSquirrel"]
+        ),
         .target(name: "CSquirrel"),
         .testTarget(
             name: "Squirrel3Tests",
-            dependencies: ["Squirrel3"]),
+            dependencies: ["Squirrel3"]
+        ),
     ]
 )
