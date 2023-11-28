@@ -23,3 +23,18 @@ public struct PRNG: SeededRandomNumberGenerator {
         return position
     }
 }
+
+let BIT_NOISE1: UInt64 = 0xB529_7A4D_B529_7A4D
+let BIT_NOISE2: UInt64 = 0x68E3_1DA4_68E3_1DA4
+let BIT_NOISE3: UInt64 = 0x1B56_C4E9_1B56_C4E9
+
+public func SwiftSquirrel3(_ position: UInt64) -> UInt64 {
+    var mangled = position // make a copy
+    mangled &*= BIT_NOISE1
+    mangled ^= (mangled >> 8)
+    mangled &+= BIT_NOISE2
+    mangled ^= (mangled << 8)
+    mangled &*= BIT_NOISE3
+    mangled ^= (mangled >> 8)
+    return mangled
+}

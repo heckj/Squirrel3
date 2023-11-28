@@ -3,6 +3,17 @@ import Squirrel3
 import XCTest
 
 final class Squirrel3Tests: XCTestCase {
+    func testCodeEquivalence() throws {
+        XCTAssertEqual(9_812_080_132_662_924_994, Squirrel3(0))
+        XCTAssertEqual(9_304_568_784_081_223_493, Squirrel3(1))
+        XCTAssertEqual(4_400_162_391_327_569_318, Squirrel3(42))
+
+        XCTAssertEqual(9_812_080_132_662_924_994, SwiftSquirrel3(0))
+        XCTAssertEqual(SwiftSquirrel3(0), Squirrel3(0))
+        XCTAssertEqual(SwiftSquirrel3(1), Squirrel3(1))
+        XCTAssertEqual(SwiftSquirrel3(42), Squirrel3(42))
+    }
+
     func testSeedConsistency() throws {
         let initialSeedValue: UInt64 = 42
         var rng = PRNG(seed: initialSeedValue)
