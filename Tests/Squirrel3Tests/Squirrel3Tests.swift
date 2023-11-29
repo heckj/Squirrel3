@@ -101,6 +101,7 @@ final class PRNGTests: XCTestCase {
                 valuesToAppend["fair"] = isWithinFairRange
 
                 dataFrame.append(valuesByColumn: valuesToAppend)
+                //XCTAssertTrue(isWithinFairRange)
             }
             print(dataFrame)
         }
