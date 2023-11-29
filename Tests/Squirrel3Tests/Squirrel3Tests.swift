@@ -72,7 +72,7 @@ final class PRNGTests: XCTestCase {
         let μ = Double(flips) * p
         let ɑ = sqrt(Double(flips) * p * (1.0 - p))
 
-        print("After \(flips) coin flips, we got \(heads). Expected: \(μ) Standard deviation: \(ɑ)")
+        print("After \(flips) coin flips, we got \(heads) results as 'heads'. Expected: \(μ) Standard deviation: \(ɑ)")
         let fairRange = (μ - 2 * ɑ ... μ + 2 * ɑ)
         XCTAssert(fairRange.contains(Double(heads)), "Fairness not within expected range: \(fairRange)")
     }
