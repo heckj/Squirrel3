@@ -123,7 +123,7 @@ final class PRNGTests: XCTestCase {
 
         // print("After \(flips) coin flips, we got \(heads) results as 'heads'. Expected: \(μ) Standard deviation: \(ɑ)")
         let fairRange = (μ - 2 * ɑ ... μ + 2 * ɑ)
-        XCTAssert(fairRange.contains(Double(heads)), "Fairness not within expected range: \(fairRange)")
+        XCTAssert(fairRange.contains(Double(heads)), "The number of heads found (\(heads)) is not within expected range: \(fairRange)")
     }
 
     func testMinCycles() throws {

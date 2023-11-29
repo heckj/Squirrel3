@@ -1,9 +1,15 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.7
 
 import PackageDescription
 
 let package = Package(
     name: "Squirrel3",
+    platforms: [
+        .iOS(.v15),
+        .macOS(.v12),
+        .tvOS(.v15),
+        .watchOS(.v7),
+    ],
     products: [
         .library(
             name: "Squirrel3",
