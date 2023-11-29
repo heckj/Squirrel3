@@ -1,5 +1,6 @@
 import CSquirrel
 import Squirrel3
+import TabularData
 import XCTest
 
 final class Squirrel3Tests: XCTestCase {
@@ -57,8 +58,56 @@ final class PRNGTests: XCTestCase {
 
     override func tearDownWithError() throws {}
 
+    func testFairnessReport() throws {
+        var rng = PRNG(seed: 1_234_456_789)
+        for _ in 1 ... 10 {
+            var dataFrame = DataFrame()
+            let flipsColumn = Column<Int>(name: "flips", capacity: 10)
+            let headsColumn = Column<Int>(name: "heads", capacity: 10)
+            let expectedColumn = Column<Double>(name: "μ", capacity: 10)
+            let stdDevColumn = Column<Double>(name: "ɑ", capacity: 10)
+            let fairnessColumn = Column<Bool>(name: "fair", capacity: 10)
+            let rangeColumn = Column<String>(name: "range", capacity: 10)
+            dataFrame.append(column: flipsColumn)
+            dataFrame.append(column: headsColumn)
+            dataFrame.append(column: expectedColumn)
+            dataFrame.append(column: stdDevColumn)
+            dataFrame.append(column: rangeColumn)
+            dataFrame.append(column: fairnessColumn)
+
+            let number_of_flips_to_check = [10, 100, 1000, 10000, 100_000, 1_000_000]
+
+            for flips in number_of_flips_to_check {
+                var heads: UInt64 = 0
+                for _ in 0 ..< flips {
+                    if Bool.random(using: &rng) {
+                        heads += 1
+                    }
+                }
+
+                let p = 0.5
+                let μ = Double(flips) * p
+                let ɑ = sqrt(Double(flips) * p * (1.0 - p))
+                // fair range is within two standard deviations of the mean
+                let fairRange = (μ - 2 * ɑ ... μ + 2 * ɑ)
+
+                let isWithinFairRange = fairRange.contains(Double(heads))
+                var valuesToAppend: [String: Any] = [:]
+                valuesToAppend["flips"] = Int(flips)
+                valuesToAppend["heads"] = Int(heads)
+                valuesToAppend["μ"] = μ
+                valuesToAppend["ɑ"] = ɑ
+                valuesToAppend["range"] = String("\(fairRange)")
+                valuesToAppend["fair"] = isWithinFairRange
+
+                dataFrame.append(valuesByColumn: valuesToAppend)
+            }
+            print(dataFrame)
+        }
+    }
+
     func testFairness() throws {
-        var rng = PRNG(seed: UInt64.random(in: 0 ..< 1_000_000))
+        var rng = PRNG(seed: 1_234_456_789)
 
         let flips = 1_000_000
         var heads = 0
@@ -72,7 +121,7 @@ final class PRNGTests: XCTestCase {
         let μ = Double(flips) * p
         let ɑ = sqrt(Double(flips) * p * (1.0 - p))
 
-        print("After \(flips) coin flips, we got \(heads) results as 'heads'. Expected: \(μ) Standard deviation: \(ɑ)")
+        // print("After \(flips) coin flips, we got \(heads) results as 'heads'. Expected: \(μ) Standard deviation: \(ɑ)")
         let fairRange = (μ - 2 * ɑ ... μ + 2 * ɑ)
         XCTAssert(fairRange.contains(Double(heads)), "Fairness not within expected range: \(fairRange)")
     }
