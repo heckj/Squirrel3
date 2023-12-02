@@ -171,8 +171,44 @@ final class PRNGTests: XCTestCase {
         XCTAssertEqual(results.count, targetMinCycles)
     }
 
+    func testSwiftVersusCCodeSpeed() throws {
+        let iterations: UInt64 = 10_000_000
+        
+        
+        @inline(never)
+        @discardableResult
+        func _blackHoleC(_ x: UInt64) -> UInt64 {
+            return Squirrel3(x)
+        }
+
+        @inline(never)
+        @discardableResult
+        func _blackHoleSwift(_ x: UInt64) -> UInt64 {
+            return SwiftSquirrel3(x)
+        }
+        
+        let startC = Date()
+        for x in 0 ..< iterations {
+            _blackHoleC(x)
+        }
+        let Cduration = Date().timeIntervalSince(startC)
+        
+        let startSwift = Date()
+        for x in 0 ..< iterations {
+            _blackHoleSwift(x)
+        }
+        let swiftDuration = Date().timeIntervalSince(startSwift)
+        
+        print("C vs Swift code duration for \(iterations.formatted()) iterations, shorter is better:")
+        print("  C code duration \(Cduration.formatted())")
+        print("  Swift code duration \(swiftDuration.formatted())")
+        
+//        C vs Swift code duration for 10,000,000 iterations, shorter is better:
+//          C code duration 2.203238
+//          Swift code duration 3.363426
+    }
+    
     func testPerformanceExample() throws {
-        // This is an example of a performance test case.
         var pass = 0
         measure {
             pass += 1
@@ -186,7 +222,7 @@ final class PRNGTests: XCTestCase {
                     heads += 1
                 }
             }
-
+            
             print("Pass: \(pass) - number of heads: \(heads).")
         }
     }
